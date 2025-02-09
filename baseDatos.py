@@ -37,4 +37,5 @@ def crear_tablas(con):
     except Error as e:
         print("Error al crear las tablas:", e)
 
-
+def cerrarBD(con):
+    con.close()
