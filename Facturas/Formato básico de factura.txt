@@ -1,0 +1,14 @@
+	 FACTURA No. {número actual}
+
+    COMPRADOR: {Nombre y apellidos cliente}
+      DIRECCIÓN: {Dirección del cliente}
+	    TEL: {Telefono cliente}
+
+---------------------------------------------------
+
+ PRODUCTO  |  CANTIDAD  |  UNIDAD  |   SUBTOTAL
+{Producto} | {Cantidad} | {valor}$ | {suma valor}$
+
+---------------------------------------------------
+
+		TOTAL: {total}$
