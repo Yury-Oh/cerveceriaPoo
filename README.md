@@ -7,10 +7,10 @@ Este proyecto es una aplicación de gestión para una cervecería artesanal, des
 
 Autores:
 
-Juana Saavedra
-Yury Muñoz
-SImón Becerra
-Nicolás Ramirez
+Juana Saavedra.
+Yury Muñoz.
+SImón Becerra.
+Nicolás Ramirez.
 
 🚀 Características
 
