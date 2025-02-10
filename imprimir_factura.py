@@ -1,5 +1,6 @@
 #Para procesos de impresión y busqueda de archivos en las carpetas de windows
-import os
+import os, sqlite3
+from sqlite3 import Error
 
 #Esta función se encarga de generar un documento plano txt en el que se ponen los datos de la factura
 #para despues imprimirla
@@ -87,7 +88,9 @@ def generar_factura(num_factura, nombre, apellido, dic, tel, lista_productos):
     
     #Crea un documento txt con la factura para imprimir
     def generar_txt():
-        with open("Proyecto POO parte 1\Facturas\prueba1.txt", "a") as file:
+        global cadena_factura
+        cadena_factura = "factura" + str(num_factura+1)
+        with open("Facturas\\" + cadena_factura + ".txt", "a") as file:
             #Creamos el encabezado de la factura
             file.write(f"{numero_factura}\n\n{comprador}\n{direccion}\n{telefono}\n\n{relleno}\n\n{titulos_tabla_formateado}\n")
 
@@ -100,9 +103,9 @@ def generar_factura(num_factura, nombre, apellido, dic, tel, lista_productos):
 
 
     #Datos de encabezado de la factura
-    numero_factura = "FACTURA No. " + str(num_factura)
+    numero_factura = "FACTURA No. " + str(num_factura+1)
     comprador = "COMPRADOR: " + nombre + " " + apellido
-    direccion = "DIRECCIÓN: " + dic
+    direccion = "DIRECCION: " + dic
     telefono = "TEL: " + tel
     relleno = "-"
 
@@ -118,11 +121,11 @@ def generar_factura(num_factura, nombre, apellido, dic, tel, lista_productos):
     for i in lista_productos:
         producto.append(i[0])
         cantidad.append(str(i[1]))
-        precio_unidad.append(str(i[2]) + "$")
-        subtotal.append(str(i[1]*i[2]) + "$")
+        precio_unidad.append(str(int(i[2])) + "$")
+        subtotal.append(str(int(i[1]*i[2])) + "$")
 
     #Datos de pie de factura
-    total = "TOTAL: " + str(calculo_total()) + "$"
+    total = "TOTAL: " + str(int(calculo_total())) + "$"
 
     #agregamos espacios para centrar los textos
     ajustador_de_linea()
@@ -138,7 +141,33 @@ def imprimir_factura(ruta):
     except:
         print("Impresión fallida")
 
-def leer_facturas(nombre, apellido, direccion, telefono, productos):
-    generar_factura(1, nombre, apellido, direccion, telefono, productos)
+def leer_factura(conex, nombre, apellido, direccion, telefono, productos, imprimir):
+    global cadena_factura
+    def consultarNumeroFactura ():
+        cursorObj = conex.cursor()
+        #recorremos la BD con el objeto de conexion
+        cad = f'''SELECT noIdFactura FROM factura'''
+        #creamos la cadena con el sql a ejecutar
+        cursorObj.execute(cad)
+        #ejecutamos la cadena con el método execute
+        filas = cursorObj.fetchall()
+        return len(filas)
+    
+    def añadirFactura ():
+        cursorObj = conex.cursor()
+        #recorremos la BD con el objeto de conexion
+        cad = f'''INSERT INTO factura VALUES ({numeroFactura+1})'''
+        #creamos la cadena con el sql a ejecutar
+        cursorObj.execute(cad)
+        #ejecutamos la cadena con el método execute
+        conex.commit()
+        #guardamos los cambios
 
-#leer_facturas("Nicolas", "Ramírez", "Cra 5000", "1234567890", [("Cerveza", 5, 1000)])
+    numeroFactura = consultarNumeroFactura()
+    try:
+        generar_factura(numeroFactura, nombre, apellido, direccion, telefono, productos)
+        añadirFactura()
+        if imprimir:
+            imprimir_factura("Facturas\\"+ cadena_factura +".txt")
+    except:
+        print("Error al generar la factura")
