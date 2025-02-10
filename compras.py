@@ -1,6 +1,6 @@
 from sqlite3 import Error
 import sqlite3
-from imprimir_factura import generar_factura
+from imprimir_factura import leer_factura
 
 
 
@@ -56,25 +56,47 @@ def finalizar_compra(carrito, con):
         print("El carrito está vacío.")
         return
     
+    noIdCliente = None
     total = sum(item[1] * item[2] for item in carrito)
     print("\nResumen de la compra:")
     for item in carrito:
         print(f"{item[1]} unidades de {item[0]} a ${item[2]} cada una.")
     print(f"Total a pagar: ${total:.2f}")
+
+    while True:
+        noIdCliente = input("Ingrese su id de cliente >> ")
+        cursor = con.cursor()
+        cursor.execute("SELECT * FROM clientes WHERE noIdCliente = ?", (noIdCliente,))
+        cliente = cursor.fetchone()
+        if cliente:
+            nombre = cliente[1]
+            apellido = cliente[2]
+            direccion = cliente [3]
+            telefono = cliente[4]
+            print(nombre, apellido, direccion, telefono)
+            break
+        else: print("ingrese un ID de cliente valido")
+    
+    while True:
+        opcion = input("Generar factura? (si o no): ")
+        if opcion == "si":
+            while True:
+                opcion2 = input("Imprimir factura? (si o no): ")
+                if opcion2 == "si":
+                    leer_factura(con, nombre, apellido, direccion, telefono, carrito, True)
+                    break
+                elif opcion2 == "no":
+                    leer_factura(con, nombre, apellido, direccion, telefono, carrito, False)
+                    break
+                else:
+                    print("Opción invalida")
+            break
+        elif opcion == "no":
+            break
+        else:
+            print("Opción invalida")
     carrito.clear()
 
-    noIdCliente = input("Ingrese su id de cliente >> ")
-    cursor = con.cursor()
-    cursor.execute("SELECT * FROM clientes WHERE noIdCliente = ?", (noIdCliente,))
-    cliente = cursor.fetchone()
-    if cliente:
-        nombre = cliente[1]
-        apellido = cliente[2]
-        direccion = cliente [3]
-        telefono = cliente[4]
-        print(nombre, apellido, direccion, telefono)
-    else: print("ingrese un ID de cliente valido")
 
-    #generar_factura()
 
 
