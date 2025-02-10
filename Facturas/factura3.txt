@@ -1,0 +1,14 @@
+             FACTURA No. 3              
+
+        COMPRADOR: jungkook jeon        
+           DIRECCION: casa 7            
+            TEL: 3119807834             
+
+-----------------------------------------
+
+ PRODUCTO | CANTIDAD | UNIDAD | SUBTOTAL 
+ cerveza  |    34    | 5000$  | 170000$  
+
+-----------------------------------------
+
+             TOTAL: 170000$             

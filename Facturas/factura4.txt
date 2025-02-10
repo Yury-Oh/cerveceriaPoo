@@ -1,0 +1,15 @@
+             FACTURA No. 4              
+
+         COMPRADOR: Yury Muñoz          
+      DIRECCION: calle 80 n 89-78       
+            TEL: 3118466006             
+
+-----------------------------------------
+
+ PRODUCTO | CANTIDAD | UNIDAD | SUBTOTAL 
+ Tequila  |    1     |100000$ | 100000$  
+ cerveza  |    6     | 5000$  |  30000$  
+
+-----------------------------------------
+
+             TOTAL: 130000$             
