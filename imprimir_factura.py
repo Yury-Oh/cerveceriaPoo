@@ -141,4 +141,4 @@ def imprimir_factura(ruta):
 def leer_facturas(nombre, apellido, direccion, telefono, productos):
     generar_factura(1, nombre, apellido, direccion, telefono, productos)
 
-leer_facturas("Nicolas", "Ramírez", "Cra 5000", "1234567890", [("Cerveza", 5, 1000)])
+#leer_facturas("Nicolas", "Ramírez", "Cra 5000", "1234567890", [("Cerveza", 5, 1000)])

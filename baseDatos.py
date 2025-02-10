@@ -33,6 +33,7 @@ def crear_tablas(con):
                 correo TEXT NOT NULL
             )
         ''')
+
         con.commit()
     except Error as e:
         print("Error al crear las tablas:", e)
