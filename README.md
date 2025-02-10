@@ -36,5 +36,7 @@ if seleccion == "1":
 
 Reemplace admin123 por la contraseña de su elección.
 
-MANUAL CASOS DE USO: file:///C:/Users/tatia/Downloads/Manual%20Casos%20de%20Uso%20(2).pdf
+MANUAL CASOS DE USO: [Manual Casos de Uso (2).pdf](https://github.com/user-attachments/files/18741650/Manual.Casos.de.Uso.2.pdf)
+
+
 
