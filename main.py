@@ -80,7 +80,7 @@ def menu_compras(con):
             print("1. Añadir producto al carrito")
             print("2. Quitar producto del carrito")
             print("3. Finalizar compra")
-            print("4. Salir")
+            print("4. Volver al Menú Principal")
             
             opcion = input("Seleccione una opción: ")
             
