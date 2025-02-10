@@ -4,30 +4,67 @@ from clientes import crear_nuevo_cliente, actualizar_direccion_cliente, consulta
 from compras import finalizar_compra, quitar_producto, añadir_producto, mostrar_productos
 
 def menu_principal():
-    con = conectar_bd()
+    con = conectar_bd() #inicia la conexion con la base de datos
     if con:
-        crear_tablas(con)
-        
+        crear_tablas(con) # crea las tablas en caso de que haya conexion
         while True:
-            print("\nMenú Principal:")
-            print("1. Menú de Productos")
-            print("2. Menú de Clientes")
-            print("3. Menú de compras")
-            print("4. Salir")
-            opcion = input("Seleccione una opción: ")
+            print("\nInicio")
+            print("1. Iniciar sesión como administrador")
+            print("2. Iniciar sesión como cliente")
+            print("3. Salir del sistema")
+            seleccion = input("Seleccione una opcion: ")
+            
+            if seleccion == "1":
+                pwd = input("\nIngrese la contraseña: ")
+                if pwd == "admin123": #evalua la contraseña introducida para dar acceso a las opciones de administrador
+                            while True:
+                                print("\nMenú Principal:")
+                                print("1. Menú de Productos")
+                                print("2. Menú de Clientes")
+                                print("3. Salir")
+                                opcion = input("Seleccione una opción: ")
 
-            if opcion == "1":
-                menu_productos(con)
-            elif opcion == "2":
-                menu_clientes(con)
+                                if opcion == "1":
+                                    menu_productos(con)
+                                elif opcion == "2":
+                                    menu_clientes(con)
+                                elif opcion == "3":
+                                    print("Saliendo del sistema...")
+                                    break
+                                else:
+                                    print("Opción no válida, intente nuevamente.")
+
+                else: print("contraseña incorrecta")
+
+            
+            elif seleccion == "2":
+                        while True:
+                            print("\nMenú Principal:")
+                            print("1. Registrarse")
+                            print("2. Actualizar su dirección (si ya está registrado)")
+                            print("3. Hacer una compra (si ya está registrado)")
+                            print("4. Salir")
+                            opcion = input("Seleccione una opción: ")
+
+                            if opcion == "1":
+                                crear_nuevo_cliente(con)
+                            elif opcion == "2":
+                                actualizar_direccion_cliente(con)
+                            elif opcion == "3":
+                                 menu_compras(con)
+                            elif opcion == "4":
+                                print("Saliendo del sistema...")
+                                break
+                            else:
+                                print("Opción no válida, intente nuevamente.")
+            
             elif opcion == "3":
-                menu_compras(con)
-            elif opcion == "4":
-                print("Saliendo del sistema...")
-                con.close()
-                break
-            else:
-                print("Opción no válida, intente nuevamente.")
+                 print("Saliendo del programa...")
+                 con.close()
+                 break
+
+            else: print("Seleccione una de las opciones")
+
 
 def menu_productos(con):
     while True:
