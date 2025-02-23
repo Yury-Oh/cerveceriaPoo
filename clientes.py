@@ -36,7 +36,7 @@ def crear_nuevo_cliente(con):
         nombre = obtener_texto("Nombre: ", 2)
         apellido = obtener_texto("Apellido: ", 2)
         direccion = obtener_texto("Dirección: ", 5)
-        telefono = obtener_texto("Teléfono: ", 7)
+        telefono = obtener_entero("Teléfono: ")
         correo = obtener_correo("Correo electrónico: ")
 
         # Inserta los datos del cliente en la tabla 'clientes'

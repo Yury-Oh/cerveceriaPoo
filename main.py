@@ -3,7 +3,7 @@ from time import sleep #Función para retardar la ejecución de un programa
 from baseDatos import conectar_bd, crear_tablas
 from productos import crear_nuevo_producto, actualizar_producto, consultar_producto
 from clientes import crear_nuevo_cliente, actualizar_direccion_cliente, consultar_cliente
-from compras import finalizar_compra, quitar_producto, añadir_producto, mostrar_productos
+from compras import Carrito, GestorCompras
 
 class Menu:
     def __init__(self, con=None, titulo="", color="\033[0m"):
@@ -184,16 +184,14 @@ class MenuClientes(Menu):
 
 class MenuCompras(Menu):
     def __init__(self, con):
-        #Se inicializan atributos heredados y carrito de compras
         super().__init__(con, titulo="Menú de Compras", color="\033[1;31m")
-        self.carrito = []
+        self.gestor_compras = GestorCompras(con)
 
     def run(self):
         while True:
-            if self.carrito:
+            if not self.gestor_compras.carrito.esta_vacio():
                 print("\n🛒 Productos en el carrito:")
-                for i, item in enumerate(self.carrito):
-                    print(f"{i + 1}. {item[1]} unidades de {item[0]} a ${item[2]} cada una.")
+                self.gestor_compras.carrito.listar_items()
             print(self.color)
             print("\n════════════════════════════=")
             print("       🛍 MENÚ DE COMPRAS       ")
@@ -205,16 +203,15 @@ class MenuCompras(Menu):
             opcion = input("\nSeleccione una opción: ")
 
             if opcion == '1':
-                añadir_producto(self.carrito, self.con)
+                self.gestor_compras.añadir_producto()
             elif opcion == '2':
-                quitar_producto(self.carrito)
+                self.gestor_compras.quitar_producto()
             elif opcion == '3':
-                finalizar_compra(self.carrito, self.con)
+                self.gestor_compras.finalizar_compra()
             elif opcion == '4':
                 print("🎉 Gracias por su compra 🍻")
                 break
             else:
                 print("⚠️ Opción no válida.")
-
 if __name__ == "__main__":
     MenuPrincipal().run()
