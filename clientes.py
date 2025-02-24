@@ -1,112 +1,173 @@
-import sqlite3
-import re
+import sqlite3  # Importa la biblioteca para manejar bases de datos SQLite
+import re  # Importa la biblioteca para manejar expresiones regulares
 
-# Función para obtener un texto con una longitud mínima
-def obtener_texto(mensaje, minimo=1):
-    while True:
-        valor = input(mensaje).strip()  # Elimina espacios al inicio y al final
-        if len(valor) >= minimo:
-            return valor  # Devuelve el texto si cumple con la longitud mínima
-        print(f"Error: el campo debe tener al menos {minimo} caracteres.")
+# Definición de la clase Cliente, que representa a un cliente en el sistema
+class Cliente:
+    def __init__(self, noIdCliente, nombre, apellido, direccion, telefono, correo):
+        # Atributos privados del cliente
+        self.__noIdCliente = noIdCliente
+        self.__nombre = nombre
+        self.__apellido = apellido
+        self.__direccion = direccion
+        self.__telefono = telefono
+        self.__correo = correo
 
-# Función para obtener un número entero validado
-def obtener_entero(mensaje):
-    while True:
+    # Métodos getter para acceder a los atributos privados
+    def get_noIdCliente(self):
+        return self.__noIdCliente
+
+    def get_nombre(self):
+        return self.__nombre
+
+    def get_apellido(self):
+        return self.__apellido
+
+    def get_direccion(self):
+        return self.__direccion
+
+    def get_telefono(self):
+        return self.__telefono
+
+    def get_correo(self):
+        return self.__correo
+
+    # Métodos setter para modificar los atributos privados
+    def set_noIdCliente(self, noIdCliente):
+        self.__noIdCliente = noIdCliente
+
+    def set_nombre(self, nombre):
+        self.__nombre = nombre
+
+    def set_apellido(self, apellido):
+        self.__apellido = apellido
+
+    def set_direccion(self, direccion):
+        self.__direccion = direccion
+
+    def set_telefono(self, telefono):
+        self.__telefono = telefono
+
+    def set_correo(self, correo):
+        self.__correo = correo
+
+# Clase GestorClientes para gestionar la base de datos y la interacción con el usuario
+class GestorClientes:
+    def __init__(self, con):
+        self.con = con  # Almacena la conexión a la base de datos SQLite
+
+    # Método para solicitar un texto con una longitud mínima
+    def obtener_texto(self, mensaje, minimo=1):
+        while True:
+            valor = input(mensaje).strip()  # Elimina espacios en blanco al inicio y final
+            if len(valor) >= minimo:  # Verifica que el texto tenga la longitud mínima
+                return valor
+            print(f"Error: el campo debe tener al menos {minimo} caracteres.")
+
+    # Método para solicitar un número entero
+    def obtener_entero(self, mensaje):
+        while True:
+            try:
+                return int(input(mensaje))  # Intenta convertir la entrada en un entero
+            except ValueError:
+                print("Error: Debe ingresar un número válido.")
+
+    # Método para solicitar un número de teléfono con validación de formato
+    def obtener_telefono(self, mensaje):
+        while True:
+            telefono = input(mensaje).strip()
+            # Expresión regular para validar un número de teléfono (entre 7 y 15 dígitos)
+            if re.fullmatch(r"\d{7,15}", telefono):
+                return telefono
+            print("Error: Ingrese un número de teléfono válido (7 a 15 dígitos).")
+
+    # Método para solicitar un correo electrónico con validación de formato
+    def obtener_correo(self, mensaje):
+        while True:
+            correo = input(mensaje).strip()
+            # Expresión regular básica para validar el correo
+            if re.fullmatch(r"[^@]+@[^@]+\.[^@]+", correo):
+                return correo
+            print("Error: Ingrese un correo electrónico válido.")
+
+    # Método para crear un nuevo cliente en la base de datos
+    def crear_nuevo_cliente(self):
         try:
-            return int(input(mensaje))  # Intenta convertir la entrada a entero
-        except ValueError:
-            print("Error: Debe ingresar un número válido.")  # Muestra un error si la conversión falla
+            cursor = self.con.cursor()  # Crea un cursor para interactuar con la base de datos
 
-# Función para obtener y validar un correo electrónico
-def obtener_correo(mensaje):
-    while True:
-        correo = input(mensaje).strip()  # Elimina espacios adicionales
-        # Verifica si el correo tiene un formato válido y pertenece a los dominios permitidos
-        if re.fullmatch(r"[\w.-]+@(gmail\.com|hotmail\.com)", correo):
-            return correo  # Retorna el correo si es válido
-        print("Error: Ingrese un correo válido con dominio @gmail.com o @hotmail.com.")
+            # Solicita los datos del cliente con validación
+            noIdCliente = self.obtener_entero("Número de identificación del cliente: ")
+            nombre = self.obtener_texto("Nombre: ", 2)
+            apellido = self.obtener_texto("Apellido: ", 2)
+            direccion = self.obtener_texto("Dirección: ", 5)
+            telefono = self.obtener_telefono("Teléfono: ")
+            correo = self.obtener_correo("Correo electrónico: ")
 
-# Función para agregar un nuevo cliente a la base de datos
-def crear_nuevo_cliente(con):
-    try:
-        cursor = con.cursor()  # Obtiene un cursor para ejecutar comandos SQL
+            # Inserta los datos en la base de datos
+            cursor.execute('''
+                INSERT INTO clientes (noIdCliente, nombre, apellido, direccion, telefono, correo)
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (noIdCliente, nombre, apellido, direccion, telefono, correo))
 
-        # Solicita datos al usuario
-        noIdCliente = obtener_entero("Número de identificación del cliente: ")
-        nombre = obtener_texto("Nombre: ", 2)
-        apellido = obtener_texto("Apellido: ", 2)
-        direccion = obtener_texto("Dirección: ", 5)
-        telefono = obtener_entero("Teléfono: ")
-        correo = obtener_correo("Correo electrónico: ")
+            self.con.commit()  # Guarda los cambios en la base de datos
+            print("Cliente agregado correctamente.")
 
-        # Inserta los datos del cliente en la tabla 'clientes'
-        cursor.execute('''
-            INSERT INTO clientes (noIdCliente, nombre, apellido, direccion, telefono, correo)
-            VALUES (?, ?, ?, ?, ?, ?)
-        ''', (noIdCliente, nombre, apellido, direccion, telefono, correo))
-        
-        con.commit()  # Guarda los cambios en la base de datos
-        print("Cliente agregado correctamente.")
-    
-    except sqlite3.IntegrityError:
-        print("Error: Ya existe un cliente con ese número de identificación.")  # Maneja duplicados de ID
-    
-    except sqlite3.Error as e:
-        print("Error al agregar el cliente:", e)  # Captura otros errores de SQLite
+        except sqlite3.IntegrityError:
+            print("Error: Ya existe un cliente con ese número de identificación.")  # Evita duplicados
 
-# Función para actualizar la dirección de un cliente existente
-def actualizar_direccion_cliente(con):
-    try:
-        cursor = con.cursor()  # Obtiene un cursor para ejecutar comandos SQL
+        except sqlite3.Error as e:
+            print("Error al agregar el cliente:", e)  # Captura cualquier otro error de SQLite
 
-        # Solicita el número de identificación del cliente
-        noIdCliente = obtener_entero("Número de identificación del cliente a actualizar: ")
+    # Método para actualizar la dirección de un cliente existente
+    def actualizar_direccion_cliente(self):
+        try:
+            cursor = self.con.cursor()
 
-        # Verifica si el cliente existe en la base de datos
-        cursor.execute("SELECT * FROM clientes WHERE noIdCliente = ?", (noIdCliente,))
-        cliente = cursor.fetchone()  # Obtiene el primer resultado
+            noIdCliente = self.obtener_entero("Número de identificación del cliente a actualizar: ")
 
-        if not cliente:
-            print("Error: El cliente con ese identificador no existe.")  # Muestra un error si el cliente no existe
-            return
+            # Verifica si el cliente existe
+            cursor.execute("SELECT * FROM clientes WHERE noIdCliente = ?", (noIdCliente,))
+            cliente = cursor.fetchone()
 
-        # Solicita la nueva dirección
-        nueva_direccion = obtener_texto("Ingrese la nueva dirección: ", 5)
+            if not cliente:
+                print("Error: El cliente con ese identificador no existe.")
+                return  # Sale del método si el cliente no existe
 
-        # Actualiza la dirección en la base de datos
-        cursor.execute('''
-            UPDATE clientes SET direccion = ? WHERE noIdCliente = ?
-        ''', (nueva_direccion, noIdCliente))
-        
-        con.commit()  # Guarda los cambios
-        print("Dirección actualizada correctamente.")
-    
-    except sqlite3.Error as e:
-        print("Error al actualizar la dirección del cliente:", e)  # Captura errores de SQLite
+            # Solicita la nueva dirección
+            nueva_direccion = self.obtener_texto("Ingrese la nueva dirección: ", 5)
 
-# Función para consultar la información de un cliente por su ID
-def consultar_cliente(con):
-    try:
-        cursor = con.cursor()  # Obtiene un cursor para ejecutar comandos SQL
+            # Actualiza la dirección en la base de datos
+            cursor.execute('''
+                UPDATE clientes SET direccion = ? WHERE noIdCliente = ?
+            ''', (nueva_direccion, noIdCliente))
 
-        # Solicita el número de identificación del cliente
-        noIdCliente = obtener_entero("Número de identificación del cliente a consultar: ")
+            self.con.commit()  # Guarda los cambios en la base de datos
+            print("Dirección actualizada correctamente.")
 
-        # Busca el cliente en la base de datos
-        cursor.execute("SELECT * FROM clientes WHERE noIdCliente = ?", (noIdCliente,))
-        cliente = cursor.fetchone()  # Obtiene el primer resultado
+        except sqlite3.Error as e:
+            print("Error al actualizar la dirección del cliente:", e)
 
-        if cliente:
-            # Muestra la información del cliente si se encontró en la base de datos
-            print("\nInformación del Cliente:")
-            print("Número de identificación:", cliente[0])
-            print("Nombre:", cliente[1])
-            print("Apellido:", cliente[2])
-            print("Dirección:", cliente[3])
-            print("Teléfono:", cliente[4])
-            print("Correo electrónico:", cliente[5])
-        else:
-            print("Cliente no encontrado.")  # Mensaje si el cliente no existe en la base de datos
-    
-    except sqlite3.Error as e:
-        print("Error al consultar el cliente:", e)  # Captura errores de SQLite
+    # Método para consultar un cliente por su número de identificación
+    def consultar_cliente(self):
+        try:
+            cursor = self.con.cursor()
+
+            noIdCliente = self.obtener_entero("Número de identificación del cliente a consultar: ")
+
+            # Busca el cliente en la base de datos
+            cursor.execute("SELECT * FROM clientes WHERE noIdCliente = ?", (noIdCliente,))
+            cliente = cursor.fetchone()
+
+            if cliente:
+                # Muestra la información del cliente si existe
+                print("\nInformación del Cliente:")
+                print("Número de identificación:", cliente[0])
+                print("Nombre:", cliente[1])
+                print("Apellido:", cliente[2])
+                print("Dirección:", cliente[3])
+                print("Teléfono:", cliente[4])
+                print("Correo electrónico:", cliente[5])
+            else:
+                print("Cliente no encontrado.")
+
+        except sqlite3.Error as e:
+            print("Error al consultar el cliente:", e)

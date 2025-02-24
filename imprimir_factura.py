@@ -179,6 +179,6 @@ class Factura:
             self.generar_factura(numeroFactura, self.nombre, self.apellido, self.direccion, self.telefono, self.productos)
             añadirFactura()
             if self.imprimir:
-                imprimir_factura("Facturas\\"+ cadena_factura +".txt")
+                self.imprimir_factura("Facturas\\"+ cadena_factura +".txt")
         except:
             print("Error al generar la factura")

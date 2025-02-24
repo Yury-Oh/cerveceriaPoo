@@ -1,0 +1,14 @@
+             FACTURA No. 6              
+
+        COMPRADOR: jungkook jeon        
+           DIRECCION: casa 7            
+            TEL: 3119807834             
+
+-----------------------------------------
+
+ PRODUCTO | CANTIDAD | UNIDAD | SUBTOTAL 
+  mojito  |    5     | 4000$  |  20000$  
+
+-----------------------------------------
+
+             TOTAL: 20000$              

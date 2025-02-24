@@ -1,8 +1,8 @@
-from time import sleep #Función para retardar la ejecución de un programa
-#Programación modular - Importación de modulos necesarios
-from baseDatos import conectar_bd, crear_tablas
-from productos import crear_nuevo_producto, actualizar_producto, consultar_producto
-from clientes import crear_nuevo_cliente, actualizar_direccion_cliente, consultar_cliente
+from time import sleep  # Función para retardar la ejecución de un programa
+# Programación modular - Importación de módulos necesarios
+from baseDatos import GestorBD
+from productos import GestorProductos
+from clientes import GestorClientes
 from compras import Carrito, GestorCompras
 
 class Menu:
@@ -28,13 +28,16 @@ class Menu:
         # Método para elevar cuando no se ha implementado un método o función
         raise NotImplementedError("El método run debe ser implementado en la subclase.")
 
-class MenuPrincipal(Menu):
+class MenuPrincipal(Menu, GestorBD):
     def __init__(self):
+        # Inicializa GestorBD con el nombre de la base de datos
+        GestorBD.__init__(self)
         # Establece la conexión y prepara la base de datos
-        con = conectar_bd()
-        if con:
-            crear_tablas(con)
-        super().__init__(con, titulo="Bienvenido a la Cervecería Artesanal", color="\033[1;33m")
+        self.conectar_bd()
+        if self.con:
+            self.crear_tablas()
+        # Inicializa Menu con la conexión y otros atributos
+        super().__init__(self.con, titulo="Bienvenido a la Cervecería Artesanal", color="\033[1;33m")
 
     def imprimir_bienvenida(self):
         print(self.color)
@@ -51,7 +54,7 @@ class MenuPrincipal(Menu):
             print("2️⃣   Iniciar sesión como cliente")
             print("3️⃣   Salir del sistema")
             seleccion = input("\nSeleccione una opción: ")
-            #Validación de credenciales de administrador
+            # Validación de credenciales de administrador
             if seleccion == "1":
                 pwd = input("\n🔑 Ingrese la contraseña de administrador: ")
                 if pwd == "admin123":
@@ -96,8 +99,9 @@ class MenuAdmin(Menu):
 
 class MenuCliente(Menu):
     def __init__(self, con):
-        # Configura el menú para clientes 
+        # Configura el menú para clientes
         super().__init__(con, titulo="Menú Cliente", color="\033[1;32m")
+        self.gestor_clientes = GestorClientes(con)
 
     def run(self):
         # Gestiona registro, actualización y compra
@@ -113,9 +117,9 @@ class MenuCliente(Menu):
             opcion = input("\nSeleccione una opción: ")
 
             if opcion == "1":
-                crear_nuevo_cliente(self.con)
+                self.gestor_clientes.crear_nuevo_cliente()
             elif opcion == "2":
-                actualizar_direccion_cliente(self.con)
+                self.gestor_clientes.actualizar_direccion_cliente()
             elif opcion == "3":
                 MenuCompras(self.con).run()
             elif opcion == "4":
@@ -127,8 +131,9 @@ class MenuCliente(Menu):
 
 class MenuProductos(Menu):
     def __init__(self, con):
-        #Atributos heredados de Menu()
+        # Atributos heredados de Menu()
         super().__init__(con, titulo="Menú de Productos", color="\033[1;35m")
+        self.gestor_productos = GestorProductos(con)
 
     def run(self):
         while True:
@@ -137,17 +142,17 @@ class MenuProductos(Menu):
             print("       📦 MENÚ DE PRODUCTOS       ")
             print("═════════════════════════════════\033[0m")
             print("1️⃣   Agregar producto")
-            print("2️⃣   Actualizar producto")
+            print("2️⃣   Actualizar nombre producto")
             print("3️⃣  🔍 Consultar producto")
             print("4️⃣  🔙 Volver al Menú Principal")
             opcion = input("\nSeleccione una opción: ")
 
             if opcion == "1":
-                crear_nuevo_producto(self.con)
+                self.gestor_productos.crear_nuevo_producto()
             elif opcion == "2":
-                actualizar_producto(self.con)
+                self.gestor_productos.actualizar_producto()
             elif opcion == "3":
-                consultar_producto(self.con)
+                self.gestor_productos.consultar_producto()
             elif opcion == "4":
                 break
             else:
@@ -157,6 +162,7 @@ class MenuClientes(Menu):
     def __init__(self, con):
         # Configura el menú de clientes (administrador)
         super().__init__(con, titulo="Menú de Clientes", color="\033[1;36m")
+        self.gestor_clientes = GestorClientes(con)
 
     def run(self):
         # Permite al administrador gestionar clientes
@@ -172,11 +178,11 @@ class MenuClientes(Menu):
             opcion = input("\nSeleccione una opción: ")
 
             if opcion == "1":
-                crear_nuevo_cliente(self.con)
+                self.gestor_clientes.crear_nuevo_cliente()
             elif opcion == "2":
-                actualizar_direccion_cliente(self.con)
+                self.gestor_clientes.actualizar_direccion_cliente()
             elif opcion == "3":
-                consultar_cliente(self.con)
+                self.gestor_clientes.consultar_cliente()
             elif opcion == "4":
                 break
             else:
@@ -213,5 +219,6 @@ class MenuCompras(Menu):
                 break
             else:
                 print("⚠️ Opción no válida.")
+
 if __name__ == "__main__":
     MenuPrincipal().run()
