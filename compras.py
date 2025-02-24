@@ -1,6 +1,6 @@
 from sqlite3 import Error
 import sqlite3
-from imprimir_factura import leer_factura
+from imprimir_factura import Factura
 
 class Carrito:
     def __init__(self):
@@ -117,10 +117,12 @@ class GestorCompras:
                 while True:
                     opcion2 = input("Imprimir factura? (si o no): ").strip().lower()
                     if opcion2 == "si":
-                        leer_factura(self.conexion, nombre, apellido, direccion, telefono, self.carrito.items, True)
+                        facturita = Factura(self.conexion, nombre, apellido, direccion, telefono, self.carrito.items, True)
+                        facturita.leer_factura()
                         break
                     elif opcion2 == "no":
-                        leer_factura(self.conexion, nombre, apellido, direccion, telefono, self.carrito.items, False)
+                        facturita = Factura(self.conexion, nombre, apellido, direccion, telefono, self.carrito.items, False)
+                        facturita.leer_factura()
                         break
                     else:
                         print("Opción inválida.")
