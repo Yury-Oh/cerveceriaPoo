@@ -85,9 +85,20 @@ class GestorProductos:
                 except ValueError:
                     print("Error: Formato de fecha inválido. Use DD/MM/AAAA.")
 
-            # Solicita los precios del producto
-            precioProduccion = float(input("Precio de producción: "))
-            precioVenta = float(input("Precio de venta: "))
+            # Solicita los precios del producto con validación
+            while True:
+                try:
+                    precioProduccion = float(input("Precio de producción: "))
+                    break  # Sale del bucle si la conversión es exitosa
+                except ValueError:
+                    print("Error: Debe ingresar un número válido para el precio de producción.")
+
+            while True:
+                try:
+                    precioVenta = float(input("Precio de venta: "))
+                    break  # Sale del bucle si la conversión es exitosa
+                except ValueError:
+                    print("Error: Debe ingresar un número válido para el precio de venta.")
 
             # Inserta los datos en la base de datos
             cursor.execute('''

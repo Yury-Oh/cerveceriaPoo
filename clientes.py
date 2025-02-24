@@ -1,11 +1,10 @@
 import sqlite3  # Importa la biblioteca para manejar bases de datos SQLite
 import re  # Importa la biblioteca para manejar expresiones regulares
 
-# Definición de la clase Cliente, que representa a un cliente en el sistema
-class Cliente:
-    def __init__(self, noIdCliente, nombre, apellido, direccion, telefono, correo):
-        # Atributos privados del cliente
-        self.__noIdCliente = noIdCliente
+# Definición de la clase base Persona
+class Persona:
+    def __init__(self, nombre, apellido, direccion, telefono, correo):
+        # Atributos privados de la clase Persona
         self.__nombre = nombre
         self.__apellido = apellido
         self.__direccion = direccion
@@ -13,9 +12,6 @@ class Cliente:
         self.__correo = correo
 
     # Métodos getter para acceder a los atributos privados
-    def get_noIdCliente(self):
-        return self.__noIdCliente
-
     def get_nombre(self):
         return self.__nombre
 
@@ -32,8 +28,6 @@ class Cliente:
         return self.__correo
 
     # Métodos setter para modificar los atributos privados
-    def set_noIdCliente(self, noIdCliente):
-        self.__noIdCliente = noIdCliente
 
     def set_nombre(self, nombre):
         self.__nombre = nombre
@@ -49,6 +43,19 @@ class Cliente:
 
     def set_correo(self, correo):
         self.__correo = correo
+
+# Definición de la clase Cliente, que hereda de Persona
+class Cliente(Persona):
+    def __init__(self, noIdCliente, nombre, apellido, direccion, telefono, correo):
+        super().__init__(nombre, apellido, direccion, telefono, correo)
+        self.__noIdCliente = noIdCliente
+
+    # Métodos getter y setter para noIdCliente
+    def get_noIdCliente(self):
+        return self.__noIdCliente
+
+    def set_noIdCliente(self, noIdCliente):
+        self.__noIdCliente = noIdCliente
 
 # Clase GestorClientes para gestionar la base de datos y la interacción con el usuario
 class GestorClientes:
