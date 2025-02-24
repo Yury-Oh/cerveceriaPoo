@@ -34,6 +34,11 @@ def crear_tablas(con):
             )
         ''')
 
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS factura (
+                noIdFactura INTEGER PRIMARY KEY)
+        ''')
+
         con.commit()
     except Error as e:
         print("Error al crear las tablas:", e)
