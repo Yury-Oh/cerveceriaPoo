@@ -19,7 +19,7 @@ def es_entero(cadena):
         return False
 
 def consultarFacturasValidas ():
-    ruta_carpeta = "cerveceriaPoo-main(1-43)\cerveceriaPoo-main\Facturas"
+    ruta_carpeta = "cerveceriaPoo-main final\cerveceriaPoo-main\Facturas"
     # Verifica si la ruta es válida y es una carpeta
     if os.path.exists(ruta_carpeta) and os.path.isdir(ruta_carpeta):
         # Lista todos los archivos en la carpeta
@@ -134,7 +134,7 @@ class Factura:
         def generar_txt():
             global cadena_factura
             cadena_factura = str(num_factura+1) + " Factura.txt"
-            with open("cerveceriaPoo-main(1-43)\cerveceriaPoo-main\Facturas\\" + cadena_factura, "a") as file:
+            with open("cerveceriaPoo-main final\cerveceriaPoo-main\Facturas\\" + cadena_factura, "a") as file:
                 #Creamos el encabezado de la factura
                 file.write(f"{numero_factura}\n\n{comprador}\n{direccion}\n{telefono}\n\n{relleno}\n\n{titulos_tabla_formateado}\n")
 
@@ -196,7 +196,7 @@ class Factura:
             contador = 1
             if len(listaFacturas) > 0:
                 for factura_actual in listaFacturas:
-                    ruta = "cerveceriaPoo-main(1-43)\cerveceriaPoo-main\Facturas\\" + factura_actual
+                    ruta = "cerveceriaPoo-main final\cerveceriaPoo-main\Facturas\\" + factura_actual
                     with open(ruta, "r") as archivo:
                         primera_linea = archivo.readline().strip()
                         linea = primera_linea.split(" ")
@@ -213,7 +213,7 @@ class Factura:
         self.generar_factura(codigoFactura, numeroFactura, self.nombre, self.apellido, self.direccion, self.telefono, self.productos)
 
         if self.imprimir:
-            self.imprimir_factura("cerveceriaPoo-main(1-43)\cerveceriaPoo-main\Facturas\\"+ cadena_factura)
+            self.imprimir_factura("cerveceriaPoo-main final\cerveceriaPoo-main\Facturas\\"+ cadena_factura)
         #except:
         #    print("Error al generar la factura")
 
