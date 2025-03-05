@@ -1,20 +1,23 @@
 import sqlite3
 from sqlite3 import Error
 
+import sqlite3
+
 class GestorBD:
     def __init__(self, db_name="cerveceria.db"):
         self.db_name = db_name
-        self.con = None  # Use 'con' consistently for the connection
+        self.con = None  # Inicializa la conexión en None
 
     def conectar_bd(self):
         """Establece la conexión con la base de datos y la devuelve."""
         try:
             self.con = sqlite3.connect(self.db_name)
             print("✅ Conexión exitosa a la base de datos.")
-            return self.con  # Return the connection
+            return self.con  # 🔥 Devuelve la conexión
         except sqlite3.Error as e:
             print("❌ Error al conectar con la base de datos:", e)
-            return None  # Avoid being None without control
+            return None  # ❌ Evita que sea None sin control
+
 
     def crear_tablas(self):
         if self.con is not None:
@@ -55,7 +58,7 @@ class GestorBD:
     def obtener_productos(self):
         """Obtiene todos los productos de la base de datos."""
         if self.con is None:
-            self.conectar_bd()  # Retry the connection if it's closed
+            self.conectar_bd()  # 🔥 Reintenta la conexión si está cerrada
 
         try:
             cursor = self.con.cursor()
@@ -66,18 +69,21 @@ class GestorBD:
             return []
 
     def inserta_producto(self, producto):
-        if self.con:
-            cursor = self.con.cursor()
-            sql = "INSERT INTO productos (nombreProducto, pesoVolumen, fechaVencimiento, precioProduccion, precioVenta) VALUES (?, ?, ?, ?, ?)"
-            cursor.execute(sql, (
-                producto.get_nombreProducto(),
-                producto.get_pesoVolumen(),
-                producto.get_fechaVencimiento(),
-                producto.get_precioProduccion(),
-                producto.get_precioVenta()
-            ))
-            self.con.commit()
-            cursor.close()
+        # Assuming you have a method to execute SQL queries
+        query = """
+        INSERT INTO productos (noIdProducto, nombreProducto, pesoVolumen, fechaVencimiento, precioProduccion, precioVenta)
+        VALUES (?, ?, ?, ?, ?, ?)
+        """
+        values = (
+            producto.get_noIdProducto(),
+            producto.get_nombreProducto(),
+            producto.get_pesoVolumen(),
+            producto.get_fechaVencimiento(),
+            producto.get_precioProduccion(),
+            producto.get_precioVenta()
+        )
+        # Execute the query with the values
+        # self.execute_query(query, values)
 
     def buscar_producto_id(self, id_producto):
         """Busca un producto por ID."""
@@ -86,16 +92,17 @@ class GestorBD:
             cursor.execute("SELECT * FROM productos WHERE noIdProducto = ?", (id_producto,))
             return cursor.fetchone()
         return None
-
+    
     def actualizar_nombre_producto(self, id_producto, nuevo_nombre):
         try:
-            if self.con is None:
-                self.conectar_bd()
-            cursor = self.con.cursor()
+            conexion = self.conectar_bd()
+            cursor = conexion.cursor()
             cursor.execute("UPDATE productos SET nombreProducto = ? WHERE noIdProducto = ?", (nuevo_nombre, id_producto))
-            self.con.commit()
+            conexion.commit()
+            conexion.close()
         except Exception as e:
             print("Error al actualizar el nombre:", e)
+
 
     def cerrar_bd(self):
         if self.con:
