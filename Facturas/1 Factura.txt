@@ -1,0 +1,14 @@
+           FACTURA No. 1023-1           
+
+       COMPRADOR: Nicolas Ramirez       
+          DIRECCION: dsadsadsa          
+            TEL: 5646541654             
+
+-----------------------------------------
+
+ PRODUCTO | CANTIDAD | UNIDAD | SUBTOTAL 
+  aguila  |    5     | 2000$  |  10000$  
+
+-----------------------------------------
+
+             TOTAL: 10000$              
