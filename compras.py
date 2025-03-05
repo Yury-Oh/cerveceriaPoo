@@ -118,11 +118,11 @@ class GestorCompras:
                 while True:
                     opcion2 = input("Imprimir factura? (si o no): ").strip().lower()  # Pregunta si desea imprimir la factura
                     if opcion2 == "si":
-                        facturita = Factura(self.conexion, nombre, apellido, direccion, telefono, self.carrito.items, True)  # Crea la factura con opción de imprimir
+                        facturita = Factura(noIdCliente, nombre, apellido, direccion, telefono, self.carrito.items, True)  # Crea la factura con opción de imprimir
                         facturita.leer_factura()  # Muestra la factura
                         break
                     elif opcion2 == "no":
-                        facturita = Factura(self.conexion, nombre, apellido, direccion, telefono, self.carrito.items, False)  # Crea la factura sin imprimir
+                        facturita = Factura(noIdCliente, nombre, apellido, direccion, telefono, self.carrito.items, False)  # Crea la factura sin imprimir
                         facturita.leer_factura()
                         break
                     else:
