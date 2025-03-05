@@ -1,13 +1,46 @@
 #Para procesos de impresión y busqueda de archivos en las carpetas de windows
-import os, sqlite3
+import os, sqlite3, sys
 from sqlite3 import Error
+
+from PyQt5.QtWidgets import (
+    QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton, QScrollArea, QLabel, QHBoxLayout, QTextEdit, QFrame
+)
+
+from PyQt5.QtCore import Qt
 
 #Esta función se encarga de generar un documento plano txt en el que se ponen los datos de la factura
 #para despues imprimirla
 
+def es_entero(cadena):
+    try:
+        int(cadena)
+        return True
+    except:
+        return False
+
+def consultarFacturasValidas ():
+    ruta_carpeta = "cerveceriaPoo-main final\cerveceriaPoo-main\Facturas"
+    # Verifica si la ruta es válida y es una carpeta
+    if os.path.exists(ruta_carpeta) and os.path.isdir(ruta_carpeta):
+        # Lista todos los archivos en la carpeta
+        archivos = os.listdir(ruta_carpeta)
+        # Filtra solo archivos (excluye subcarpetas)
+        archivos = [archivo for archivo in archivos if os.path.isfile(os.path.join(ruta_carpeta, archivo))]
+
+        facturasValidas = []
+        # Filtra solos archivos de factura validos
+        for valido in archivos:
+            nombreSeparado = valido.split(" ")
+            if nombreSeparado[1] == "Factura.txt" and es_entero(nombreSeparado[0]):
+                facturasValidas.append(valido)
+        return facturasValidas
+    else:
+        print("ruta de carpeta invalida")
+        return []
+
 class Factura:
-    def __init__(self, con, nombre, apellido, direccion, telefono, productos, imprimir):
-        self.conex = con
+    def __init__(self, codigoCliente, nombre, apellido, direccion, telefono, productos, imprimir):
+        self.codigoCliente = codigoCliente
         self.nombre = nombre
         self.apellido = apellido
         self.direccion = direccion
@@ -15,7 +48,7 @@ class Factura:
         self.productos = productos
         self.imprimir = imprimir
 
-    def generar_factura(self, num_factura, nombre, apellido, dic, tel, lista_productos):
+    def generar_factura(self, codigo, num_factura, nombre, apellido, dic, tel, lista_productos):
         global numero_factura, comprador, direccion, telefono, total, relleno, titulos_tabla_formateado
         #agrega espacios antes de las lineas para centrar los textos
         def ajustador_de_linea():
@@ -100,8 +133,8 @@ class Factura:
         #Crea un documento txt con la factura para imprimir
         def generar_txt():
             global cadena_factura
-            cadena_factura = "factura" + str(num_factura+1)
-            with open("Facturas\\" + cadena_factura + ".txt", "a") as file:
+            cadena_factura = str(num_factura+1) + " Factura.txt"
+            with open("cerveceriaPoo-main final\cerveceriaPoo-main\Facturas\\" + cadena_factura, "a") as file:
                 #Creamos el encabezado de la factura
                 file.write(f"{numero_factura}\n\n{comprador}\n{direccion}\n{telefono}\n\n{relleno}\n\n{titulos_tabla_formateado}\n")
 
@@ -114,7 +147,7 @@ class Factura:
 
 
         #Datos de encabezado de la factura
-        numero_factura = "FACTURA No. " + str(num_factura+1)
+        numero_factura = "FACTURA No. " + codigo
         comprador = "COMPRADOR: " + nombre + " " + apellido
         direccion = "DIRECCION: " + dic
         telefono = "TEL: " + tel
@@ -154,31 +187,34 @@ class Factura:
 
     def leer_factura(self):
         global cadena_factura
-        def consultarNumeroFactura ():
-            cursorObj = self.conex.cursor()
-            #recorremos la BD con el objeto de conexion
-            cad = f'''SELECT noIdFactura FROM factura'''
-            #creamos la cadena con el sql a ejecutar
-            cursorObj.execute(cad)
-            #ejecutamos la cadena con el método execute
-            filas = cursorObj.fetchall()
-            return len(filas)
-        
-        def añadirFactura ():
-            cursorObj = self.conex.cursor()
-            #recorremos la BD con el objeto de conexion
-            cad = f'''INSERT INTO factura VALUES ({numeroFactura+1})'''
-            #creamos la cadena con el sql a ejecutar
-            cursorObj.execute(cad)
-            #ejecutamos la cadena con el método execute
-            self.conex.commit()
-            #guardamos los cambios
 
+        def consultarNumeroFactura ():
+            return len(consultarFacturasValidas())
+
+        def leerCodigoFactura():
+            listaFacturas = consultarFacturasValidas()
+            contador = 1
+            if len(listaFacturas) > 0:
+                for factura_actual in listaFacturas:
+                    ruta = "cerveceriaPoo-main final\cerveceriaPoo-main\Facturas\\" + factura_actual
+                    with open(ruta, "r") as archivo:
+                        primera_linea = archivo.readline().strip()
+                        linea = primera_linea.split(" ")
+                        codigoPartes = linea[2].split("-")
+                        if codigoPartes[0] == self.codigoCliente:
+                            contador += 1
+            return self.codigoCliente + "-" + str(contador)
+
+        #lee las facturas en la carpeta "Facturas", y despues lee las facturas del mismo cliente
         numeroFactura = consultarNumeroFactura()
-        try:
-            self.generar_factura(numeroFactura, self.nombre, self.apellido, self.direccion, self.telefono, self.productos)
-            añadirFactura()
-            if self.imprimir:
-                self.imprimir_factura("Facturas\\"+ cadena_factura +".txt")
-        except:
-            print("Error al generar la factura")
+        codigoFactura = leerCodigoFactura()
+
+        #try:
+        self.generar_factura(codigoFactura, numeroFactura, self.nombre, self.apellido, self.direccion, self.telefono, self.productos)
+
+        if self.imprimir:
+            self.imprimir_factura("cerveceriaPoo-main final\cerveceriaPoo-main\Facturas\\"+ cadena_factura)
+        #except:
+        #    print("Error al generar la factura")
+
+
