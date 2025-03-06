@@ -13,7 +13,6 @@ class VentanaPrincipal(QMainWindow):
 
         self.bt_menu.clicked.connect(self.mover_menu)
 
-        
         # Conectar a la base de datos
         self.base_datos = GestorBD()
         self.base_datos.conectar_bd()
@@ -50,9 +49,10 @@ class VentanaPrincipal(QMainWindow):
         self.bt_datos.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.page_datos))
         self.bt_agregar_producto.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.page_agregar))
         self.bt_actualizar_nombre.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.page_actualizar))
-        
+
         # Configurar tabla
         self.tabla_productos.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tabla_productos.setSortingEnabled(True)  # Habilitar ordenamiento
 
     def control_bt_normal(self):
         self.showNormal()
@@ -86,9 +86,11 @@ class VentanaPrincipal(QMainWindow):
         self.animacion.setEndValue(new_width)
         self.animacion.setEasingCurve(QtCore.QEasingCurve.InOutQuart)
         self.animacion.start()
-    
+
     def mostrar_productos(self):
+        self.tabla_productos.setSortingEnabled(False)  # Deshabilitar ordenamiento temporalmente
         self.tabla_productos.setRowCount(0)  # Limpiar tabla
+
         self.base_datos.conectar_bd()
         productos = self.base_datos.obtener_productos()  # Obtener productos desde la BD
 
@@ -101,8 +103,12 @@ class VentanaPrincipal(QMainWindow):
             self.tabla_productos.setItem(row_idx, 4, QTableWidgetItem(str(producto[4])))
             self.tabla_productos.setItem(row_idx, 5, QTableWidgetItem(str(producto[5])))
 
+        self.tabla_productos.setSortingEnabled(True)  # Habilitar ordenamiento nuevamente
+        self.tabla_productos.sortItems(0, QtCore.Qt.AscendingOrder)  # Ordenar por la primera columna
+
         self.signal_actualizar.setText("")
         self.signal_agregar.setText("")
+
 
     def agregar_productos(self):
         codigo = self.reg_id.text().strip().upper()
@@ -132,7 +138,7 @@ class VentanaPrincipal(QMainWindow):
 
         if id_producto:
             producto = self.base_datos.buscar_producto_id(id_producto)  # Buscar en la BD
-            
+
             if producto:  # Si el producto existe
                 self.act_nombre.setText(producto[1])  # Nombre actual
                 self.signal_actualizar.setText("Producto encontrado")
@@ -140,7 +146,6 @@ class VentanaPrincipal(QMainWindow):
                 self.signal_actualizar.setText("Producto no encontrado")
         else:
             self.signal_actualizar.setText("Ingrese un ID válido")
-
 
     def actualizar_nombre(self):
         id_producto = self.act_buscar.text().strip().upper()
@@ -156,8 +161,6 @@ class VentanaPrincipal(QMainWindow):
                 self.signal_actualizar.setText("Producto no encontrado")
         else:
             self.signal_actualizar.setText("Ingrese ID y nuevo nombre")
-
-
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
