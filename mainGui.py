@@ -9,7 +9,7 @@ from productos import Producto
 class VentanaPrincipal(QMainWindow):
     def __init__(self):
         super(VentanaPrincipal, self).__init__()
-        loadUi('cerveceriaPoo-main\Productos2.ui', self)
+        loadUi('Productos2.ui', self)
 
         self.bt_menu.clicked.connect(self.mover_menu)
 
