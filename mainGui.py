@@ -53,6 +53,7 @@ class VentanaPrincipal(QMainWindow):
         
         # Configurar tabla
         self.tabla_productos.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.tabla_productos.setSortingEnabled(True)  # Habilitar ordenamiento
 
     def control_bt_normal(self):
         self.showNormal()
@@ -88,6 +89,7 @@ class VentanaPrincipal(QMainWindow):
         self.animacion.start()
     
     def mostrar_productos(self):
+        self.tabla_productos.setSortingEnabled(False)  # Deshabilitar ordenamiento temporalmente
         self.tabla_productos.setRowCount(0)  # Limpiar tabla
         self.base_datos.conectar_bd()
         productos = self.base_datos.obtener_productos()  # Obtener productos desde la BD
@@ -100,6 +102,9 @@ class VentanaPrincipal(QMainWindow):
             self.tabla_productos.setItem(row_idx, 3, QTableWidgetItem(producto[3]))
             self.tabla_productos.setItem(row_idx, 4, QTableWidgetItem(str(producto[4])))
             self.tabla_productos.setItem(row_idx, 5, QTableWidgetItem(str(producto[5])))
+
+        self.tabla_productos.setSortingEnabled(True)  # Habilitar ordenamiento nuevamente
+        self.tabla_productos.sortItems(0, QtCore.Qt.AscendingOrder)  # Ordenar por la primera columna
 
         self.signal_actualizar.setText("")
         self.signal_agregar.setText("")

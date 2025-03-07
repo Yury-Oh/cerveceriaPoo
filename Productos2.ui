@@ -101,13 +101,50 @@ border-radius: 20px;
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../imagenes/menu.png</normaloff>../../imagenes/menu.png</iconset>
+              <normaloff>menu.png</normaloff>menu.png</iconset>
             </property>
             <property name="iconSize">
              <size>
               <width>38</width>
               <height>38</height>
              </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_9">
+            <property name="maximumSize">
+             <size>
+              <width>120</width>
+              <height>70</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="pixmap">
+             <pixmap>logo.png</pixmap>
+            </property>
+            <property name="scaledContents">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_13">
+            <property name="font">
+             <font>
+              <family>Arial Black</family>
+              <pointsize>14</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">color: rgb(225, 161, 11);</string>
+            </property>
+            <property name="text">
+             <string>CERVECERÍA ARTESANAL</string>
             </property>
            </widget>
           </item>
@@ -137,7 +174,7 @@ border-radius: 20px;
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../imagenes/minimizar.png</normaloff>../../imagenes/minimizar.png</iconset>
+              <normaloff>minimizar.png</normaloff>minimizar.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -160,7 +197,7 @@ border-radius: 20px;
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../imagenes/reducir.png</normaloff>../../imagenes/reducir.png</iconset>
+              <normaloff>reducir.png</normaloff>reducir.png</iconset>
             </property>
             <property name="iconSize">
              <size>
